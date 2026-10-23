@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from .api_router import api_router
 
 urlpatterns = [
     # Panel de administracion
@@ -36,10 +37,8 @@ urlpatterns = [
         name="redoc",
     ),
 
-    # Endpoints de la API
-    path("api/", include("catalogo.urls")),
-    path("api/", include("clientes.urls")),
-    path("api/", include("ventas.urls")),
+    # Endpoints unificados de la API REST navegable
+    path("api/", include(api_router.urls)),
 
     # Vista principal de bienvenida
     path("", include("core.urls")),
