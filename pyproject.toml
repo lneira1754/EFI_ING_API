@@ -1,0 +1,23 @@
+[project]
+name = "optica-api"
+version = "0.1.0"
+description = "API REST para gestion de optica y anteojos"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.1.0",
+    "djangorestframework>=3.15.0",
+    "djangorestframework-simplejwt>=5.3.0",
+    "django-filter>=24.0",
+    "django-cors-headers>=4.4.0",
+    "drf-spectacular>=0.27.0",
+    "psycopg[binary]>=3.2.0",
+    "dj-database-url>=2.2.0",
+    "python-decouple>=3.8",
+    "pillow>=10.4.0",
+    "whitenoise>=6.7.0",
+    "gunicorn>=23.0.0",
+]
+
+[tool.uv]
+package = false
