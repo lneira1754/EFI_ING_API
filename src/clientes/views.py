@@ -65,6 +65,7 @@ class RecetaViewSet(viewsets.ModelViewSet):
     queryset = Receta.objects.select_related("cliente__usuario", "optometrista").all()
     serializer_class = RecetaSerializer
     permission_classes = [EsDuenioOAdmin]
+    filterset_fields = ["optometrista"]
     ordering_fields = ["fecha_emision", "creado"]
 
     def get_queryset(self):
@@ -87,6 +88,8 @@ class TurnoViewSet(viewsets.ModelViewSet):
     queryset = Turno.objects.select_related("cliente__usuario", "optometrista").all()
     serializer_class = TurnoSerializer
     permission_classes = [EsDuenioOAdmin]
+    filterset_fields = ["estado", "optometrista"]
+    search_fields = ["motivo"]
     ordering_fields = ["fecha_hora", "creado"]
 
     def get_queryset(self):

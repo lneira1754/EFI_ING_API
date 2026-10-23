@@ -3,10 +3,569 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Óptica y Anteojos</title>
+    <title>Óptica Visión | API REST</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #131a29;
+            --bg-card: #1b2438;
+            --border: #26334d;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --accent-purple: #818cf8;
+            --success: #34d399;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(19, 26, 41, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+            color: #0b1120;
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-outline {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background-color: #232f47;
+            border-color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.9rem;
+            background-color: rgba(52, 211, 153, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin: 3.5rem 0;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .stat-number {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .doc-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1.75rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .doc-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .doc-tag {
+            align-self: flex-start;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            background-color: rgba(56, 189, 248, 0.12);
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .doc-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .doc-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .doc-card-link {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .product-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+
+        .product-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .product-img-wrap {
+            width: 100%;
+            height: 200px;
+            background-color: #0f1523;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-img-wrap img {
+            transform: scale(1.05);
+        }
+
+        .product-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-brand {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .product-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin: 0.25rem 0 0.5rem;
+            color: #ffffff;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .badge-stock {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(52, 211, 153, 0.15);
+            color: var(--success);
+        }
+
+        .empty-catalog {
+            background-color: var(--bg-card);
+            border: 1px dashed var(--border);
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-catalog code {
+            background-color: var(--bg-primary);
+            color: var(--accent);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            background-color: var(--bg-secondary);
+            padding: 2rem 1.5rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
 </head>
-<body style="font-family: system-ui, sans-serif; background-color: #0b0f19; color: #f3f4f6; padding: 2rem;">
-    <h1>API Óptica y Anteojos</h1>
-    <p>Servidor activo. Acceda a la documentación en <a href="/api/docs/" style="color: #60a5fa;">/api/docs/</a>.</p>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="/" class="brand">
+                <div class="brand-icon">👓</div>
+                <span>Óptica Visión API</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/api/docs/">Swagger</a>
+                <a href="/api/redoc/">ReDoc</a>
+                <a href="/api/">API Navegable</a>
+                <a href="/admin/">Admin</a>
+            </nav>
+            <a href="/api/docs/" class="btn btn-primary">Explorar API</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>Servidor Activo • PostgreSQL Supabase</span>
+            </div>
+            <h1>API REST de Óptica y Anteojos</h1>
+            <p>
+                Backend para gestión integral de catálogo, clientes, recetas oftálmicas,
+                turnos de optometría y pedidos de anteojos graduados y de sol.
+            </p>
+            <div class="hero-actions">
+                <a href="/api/docs/" class="btn btn-primary">Documentación Swagger</a>
+                <a href="/api/redoc/" class="btn btn-outline">Especificación ReDoc</a>
+                <a href="/api/" class="btn btn-outline">API Navegable (DRF)</a>
+                <a href="/admin/" class="btn btn-outline">Panel de Control</a>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">13</div>
+                <div class="stat-label">Modelos en Base de Datos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Endpoints REST</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">JWT</div>
+                <div class="stat-label">Autenticación por Tokens</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Soporte CORS Habilitado</div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Acceso Rápido a la API</h2>
+            <p class="section-desc">Puntos de entrada para desarrolladores e integración frontend.</p>
+            <div class="docs-grid">
+                <a href="/api/docs/" class="doc-card">
+                    <div>
+                        <span class="doc-tag">Interactivo</span>
+                        <h3>Swagger UI</h3>
+                        <p>Pruebe endpoints en vivo, autentíquese con JWT o sesión y revise schemas de respuesta.</p>
+                    </div>
+                    <span class="doc-card-link">Abrir Swagger →</span>
+                </a>
+                <a href="/api/redoc/" class="doc-card">
+                    <div>
+                        <span class="doc-tag">Documentación</span>
+                        <h3>ReDoc</h3>
+                        <p>Referencia técnica detallada con visualización de parámetros, códigos HTTP y ejemplos JSON.</p>
+                    </div>
+                    <span class="doc-card-link">Abrir ReDoc →</span>
+                </a>
+                <a href="/api/" class="doc-card">
+                    <div>
+                        <span class="doc-tag">Explorador</span>
+                        <h3>API Navegable</h3>
+                        <p>Interfaz web nativa de DRF para consultar listados paginados, filtros y relaciones anidadas.</p>
+                    </div>
+                    <span class="doc-card-link">Explorar /api/ →</span>
+                </a>
+                <a href="/admin/" class="doc-card">
+                    <div>
+                        <span class="doc-tag">Gestión</span>
+                        <h3>Panel Django Admin</h3>
+                        <p>Control administrativo con filtros avanzados, búsqueda, ordenamiento y previsualización de imágenes.</p>
+                    </div>
+                    <span class="doc-card-link">Ingresar al Admin →</span>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Catálogo de Muestra</h2>
+            <p class="section-desc">Modelos disponibles para consulta inmediata vía <code>/api/anteojos/</code>.</p>
+            {% if anteojos %}
+            <div class="products-grid">
+                {% for item in anteojos %}
+                <div class="product-card">
+                    <div class="product-img-wrap">
+                        {% with item.imagenes.first as img %}
+                            {% if img and img.imagen %}
+                                <img src="{{ img.imagen.url }}" alt="{{ item.nombre }}">
+                            {% else %}
+                                <div style="color: var(--text-muted); font-size: 2.5rem;">🕶️</div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div class="product-body">
+                        <span class="product-brand">{{ item.marca.nombre }} • {{ item.categoria.nombre }}</span>
+                        <h4 class="product-title">{{ item.nombre }}</h4>
+                        <div class="product-meta">
+                            <span class="product-price">${{ item.precio }}</span>
+                            <span class="badge-stock">{{ item.stock }} en stock</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-catalog">
+                <p style="margin-bottom: 0.75rem;">Aún no se han cargado productos en la base de datos de Supabase.</p>
+                <p>Ejecute <code>uv run python src/manage.py cargar_datos</code> en la Fase 5 para poblar el catálogo automáticamente con las imágenes de muestra.</p>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <strong>Óptica Visión</strong> • Sistema Backend API REST
+            </div>
+            <div>
+                Django 5.1+ • Django REST Framework • SimpleJWT • Supabase
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

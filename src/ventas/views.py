@@ -23,6 +23,8 @@ class PedidoViewSet(viewsets.ModelViewSet):
         .all()
     )
     permission_classes = [EsDuenioOAdmin]
+    filterset_fields = ["estado"]
+    search_fields = ["id", "notas"]
     ordering_fields = ["creado", "total"]
 
     def get_queryset(self):
@@ -124,6 +126,8 @@ class ResenaViewSet(viewsets.ModelViewSet):
     queryset = Resena.objects.select_related("cliente__usuario", "anteojo").all()
     serializer_class = ResenaSerializer
     permission_classes = [EsDuenioResenaOAdmin]
+    filterset_fields = ["puntaje", "anteojo"]
+    search_fields = ["comentario", "anteojo__nombre"]
     ordering_fields = ["creado", "puntaje"]
 
     def perform_create(self, serializer):

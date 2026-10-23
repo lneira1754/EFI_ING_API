@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.permissions import EsAdminOSoloLectura
+from .filters import AnteojoFilter
 from .models import Anteojo, Categoria, ImagenAnteojo, Marca, Material, TipoLente
 from .serializers import (
     AnteojoListSerializer,
@@ -19,6 +20,7 @@ class MarcaViewSet(viewsets.ModelViewSet):
     queryset = Marca.objects.all()
     serializer_class = MarcaSerializer
     permission_classes = [EsAdminOSoloLectura]
+    filterset_fields = ["activo", "pais_origen"]
     search_fields = ["nombre", "pais_origen"]
     ordering_fields = ["nombre", "creado"]
 
@@ -28,6 +30,7 @@ class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategoriaSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = "slug"
+    filterset_fields = ["activo"]
     search_fields = ["nombre", "descripcion"]
     ordering_fields = ["nombre"]
 
@@ -36,6 +39,7 @@ class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Material.objects.filter(activo=True)
     serializer_class = MaterialSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["activo"]
     search_fields = ["nombre"]
     ordering_fields = ["nombre"]
 
@@ -44,6 +48,7 @@ class TipoLenteViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = TipoLente.objects.filter(activo=True)
     serializer_class = TipoLenteSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_fields = ["activo"]
     search_fields = ["nombre"]
     ordering_fields = ["nombre", "precio_adicional"]
 
@@ -55,6 +60,7 @@ class AnteojoViewSet(viewsets.ModelViewSet):
         .all()
     )
     permission_classes = [EsAdminOSoloLectura]
+    filterset_class = AnteojoFilter
     search_fields = ["nombre", "sku", "marca__nombre", "color_marco"]
     ordering_fields = ["precio", "creado", "stock", "nombre"]
 

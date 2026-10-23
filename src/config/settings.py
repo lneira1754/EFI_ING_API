@@ -126,7 +126,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "core.pagination.PaginacionPersonalizada",
     "PAGE_SIZE": 10,
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -146,8 +146,8 @@ SIMPLE_JWT = {
 
 # Configuracion de OpenAPI / Swagger con drf-spectacular
 SPECTACULAR_SETTINGS = {
-    "TITLE": "API Optica y Anteojos",
-    "DESCRIPTION": "API REST para catalogo, clientes, recetas, turnos y pedidos de optica",
+    "TITLE": "API Óptica y Anteojos",
+    "DESCRIPTION": "API REST para catálogo, clientes, recetas, turnos y pedidos de óptica",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
@@ -158,4 +158,5 @@ CORS_ALLOWED_ORIGINS = config(
     default="http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173",
     cast=Csv(),
 )
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOW_CREDENTIALS = True
