@@ -1,0 +1,33 @@
+# Secrets: never ship environment files into the image
+.env
+.env.*
+
+# Local environments and VCS
+.venv
+.git
+.gitignore
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+
+# Local data and generated files
+db.sqlite3
+db.sqlite3-journal
+src/media
+src/staticfiles
+*.log
+
+# Docs, tooling and editor files
+docs/
+odd/
+.atl/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Docker files themselves
+Dockerfile
+docker-compose.yml
+.dockerignore
