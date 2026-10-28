@@ -138,3 +138,22 @@ class ResenaSerializer(serializers.ModelSerializer):
 
     def get_cliente_nombre(self, obj):
         return obj.cliente.usuario.get_full_name() or obj.cliente.usuario.username
+
+    def validate(self, attrs):
+        # El cliente no viene en el body: es el usuario logueado (o el dueño, si se edita)
+        request = self.context.get("request")
+        if self.instance:
+            cliente = self.instance.cliente
+        else:
+            cliente = getattr(request.user, "cliente", None) if request else None
+        anteojo = attrs.get("anteojo", getattr(self.instance, "anteojo", None))
+
+        if cliente and anteojo:
+            existentes = Resena.objects.filter(cliente=cliente, anteojo=anteojo)
+            if self.instance:
+                existentes = existentes.exclude(pk=self.instance.pk)
+            if existentes.exists():
+                raise serializers.ValidationError(
+                    {"anteojo": "Ya escribiste una reseña para este anteojo."}
+                )
+        return attrs
