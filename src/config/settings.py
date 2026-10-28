@@ -77,7 +77,8 @@ if DATABASE_URL:
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True,
+            # Supabase requiere SSL; el Postgres local de docker-compose no lo usa
+            ssl_require=config("DB_SSL_REQUIRE", default=True, cast=bool),
         )
     }
 else:

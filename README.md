@@ -168,7 +168,47 @@ El servidor quedará disponible en `http://127.0.0.1:8000/`.
 
 ---
 
-## 6. Credenciales de Prueba
+## 6. Ejecución con Docker
+
+Alternativa a la instalación manual: levanta la API junto con una base PostgreSQL local, sin necesidad de credenciales externas.
+
+### Paso 1: Requisitos
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (incluye Docker Compose) en ejecución.
+- El puerto `8000` libre en el equipo.
+
+### Paso 2: Construir e iniciar los servicios
+```bash
+docker compose up --build
+```
+
+El archivo `docker-compose.yml` define dos servicios:
+- **db**: PostgreSQL 17 con los datos persistidos en un volumen.
+- **web**: la API servida con Gunicorn. Al iniciar espera a que la base esté disponible, aplica las migraciones (`migrate`) y, solo en el primer arranque, ejecuta `cargar_datos` con los datos de prueba e imágenes.
+
+La configuración de Docker es independiente del archivo `.env`: no lo lee ni lo copia a la imagen, por lo que nunca modifica la base de datos de Supabase.
+
+### Paso 3: Acceder a la aplicación
+- Inicio: `http://localhost:8000/`
+- Documentación Swagger: `http://localhost:8000/api/docs/`
+- Panel de administración: `http://localhost:8000/admin/`
+
+Usuarios disponibles (ver sección 7):
+- Administrador: `admin` / `admin1234`
+- Cliente: `cliente_demo` / `demo1234`
+
+### Paso 4: Detener los servicios
+```bash
+docker compose down      # detiene los contenedores y conserva los datos
+docker compose down -v   # detiene los contenedores y borra los volúmenes (base de datos e imágenes)
+```
+
+### Notas
+- El compose usa `DEBUG=True` para que Django sirva las imágenes de `/media/`. Es una configuración pensada solo para evaluación local, no para producción.
+- Para usar Supabase en lugar del PostgreSQL local, defina en el servicio `web` la variable `DATABASE_URL` con la cadena de conexión de Supabase y `DB_SSL_REQUIRE=True`.
+
+---
+
+## 7. Credenciales de Prueba
 
 Tras ejecutar `cargar_datos`, los siguientes usuarios quedan disponibles:
 

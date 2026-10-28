@@ -1,0 +1,42 @@
+# Local stack: Django (gunicorn) + PostgreSQL.
+# Self-contained environment: it does NOT read the repo .env, so migrations and
+# seed data never touch any shared/remote database.
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: optica
+      POSTGRES_USER: optica
+      POSTGRES_PASSWORD: optica
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U optica -d optica"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://optica:optica@db:5432/optica
+      DB_SSL_REQUIRE: "False"
+      # DEBUG=True is required so Django serves uploaded media (config/urls.py).
+      # Local evaluation only; never use these values in production.
+      DEBUG: "True"
+      SECRET_KEY: django-insecure-docker-local-dev-key
+      ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173
+      LOAD_SEED_DATA: "true"
+    volumes:
+      - media_data:/app/src/media
+
+volumes:
+  postgres_data:
+  media_data:
