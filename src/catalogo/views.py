@@ -65,10 +65,10 @@ class AnteojoViewSet(viewsets.ModelViewSet):
     ordering_fields = ["precio", "creado", "stock", "nombre"]
 
     def get_serializer_class(self):
-        # Muestra datos anidados unicamente si se consulta un list (get all)
-        if self.action == "list":
-            return AnteojoListSerializer
-        return AnteojoSerializer
+            # Listado y detalle usan datos anidados.
+            if self.action in ("list", "retrieve"):
+                return AnteojoListSerializer
+            return AnteojoSerializer    
 
     @action(detail=False, methods=["get"])
     def destacados(self, request):
