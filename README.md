@@ -222,3 +222,33 @@ Tras ejecutar `cargar_datos`, los siguientes usuarios quedan disponibles:
 - **Contraseña:** `demo1234`
 - **DNI:** `39485120`
 - **Acceso:** Consulta de perfil propio `/api/clientes/me/`, recetas, turnos y pedidos propios.
+
+---
+
+## 8. Despliegue en Railway
+
+El servicio se despliega desde este repositorio usando el `Dockerfile`. Gunicorn escucha en el puerto definido por la variable `PORT` que asigna Railway (8000 si no está definida).
+
+### Pasos
+1. Crear un proyecto en Railway desde este repositorio de GitHub.
+2. Agregar una base PostgreSQL (o usar la de Supabase) y referenciar su `DATABASE_URL` en el servicio.
+3. Agregar un **Volume** montado en `/app/src/media` para que las imágenes subidas no se pierdan en cada redeploy.
+4. Cargar las variables de entorno de la tabla siguiente.
+5. En *Settings → Networking*, generar el dominio público.
+
+### Variables de entorno
+
+| Variable | Valor |
+| --- | --- |
+| `DATABASE_URL` | Cadena de conexión de PostgreSQL |
+| `DEBUG` | `False` |
+| `SECRET_KEY` | Clave aleatoria y secreta |
+| `ALLOWED_HOSTS` | `<servicio>.up.railway.app` |
+| `CSRF_TRUSTED_ORIGINS` | `https://<servicio>.up.railway.app` |
+| `LOAD_SEED_DATA` | `true` (carga los datos de prueba si la base está vacía) |
+| `SERVE_MEDIA` | `True` (opcional; sirve `/media/` con `DEBUG=False`) |
+
+### Notas
+- `cargar_datos` solo se ejecuta si la base no tiene anteojos. Si la base ya tiene datos pero el volumen está vacío, las imágenes no existirán: ejecutar `python manage.py cargar_datos` manualmente o usar una base nueva.
+- `SECURE_PROXY_SSL_HEADER` permite que Django genere URLs `https://` detrás del proxy de Railway.
+- La URL base que consume el frontend es `https://<servicio>.up.railway.app/api`.
