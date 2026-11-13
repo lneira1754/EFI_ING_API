@@ -87,6 +87,7 @@ Todos los endpoints se encuentran unificados bajo el prefijo `/api/`.
 ### Autenticación y Documentación
 - `POST /api/token/` - Obtención de par de tokens JWT (`access` y `refresh`).
 - `POST /api/token/refresh/` - Renovación del token de acceso JWT.
+- `GET /api/usuarios/me/` - Datos del usuario autenticado (incluye `is_staff` y `cliente_id`), tenga o no perfil de cliente.
 - `GET /api/schema/` - Esquema OpenAPI 3.0 en formato YAML/JSON.
 - `GET /api/docs/` - Interfaz interactiva Swagger UI.
 - `GET /api/redoc/` - Documentación técnica ReDoc.
