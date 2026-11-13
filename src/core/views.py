@@ -1,4 +1,7 @@
 from django.views.generic import TemplateView
+from rest_framework import permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from catalogo.models import Anteojo, Categoria, Marca
 
 
@@ -18,3 +21,24 @@ class HomeView(TemplateView):
         context["categorias"] = Categoria.objects.filter(activo=True)
         context["endpoints_count"] = 12
         return context
+
+
+class UsuarioActualView(APIView):
+    """Datos del usuario autenticado, tenga o no perfil de cliente."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        usuario = request.user
+        cliente = getattr(usuario, "cliente", None)
+        return Response(
+            {
+                "id": usuario.id,
+                "username": usuario.username,
+                "email": usuario.email,
+                "nombre": usuario.first_name,
+                "apellido": usuario.last_name,
+                "is_staff": usuario.is_staff,
+                "cliente_id": cliente.id if cliente else None,
+            }
+        )
